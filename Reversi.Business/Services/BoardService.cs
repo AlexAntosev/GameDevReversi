@@ -36,5 +36,12 @@ namespace Reversi.Business.Services
             board["D5"] = new Disk(Side.Light);
             board["E4"] = new Disk(Side.Light);
         }
+
+        public Dictionary<string, Disk> PlaceDisk(Dictionary<string, Disk> board, string boardPlace, Side side)
+        {
+            board[boardPlace] = new Disk(side);
+
+            return board;
+        }
     }
 }

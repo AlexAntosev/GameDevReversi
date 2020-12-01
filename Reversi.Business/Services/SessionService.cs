@@ -15,12 +15,12 @@ namespace Reversi.Business.Services
             _boardService = boardService;
         }
         
-        public Session CreateSession()
+        public Session CreateSession(Player player)
         {
             var session = new Session()
             {
                 Board = _boardService.CreateBoard(),
-                Player = _playerService.CreatePlayer("You", Side.Light),
+                Player = player,
                 Opponent = _playerService.CreatePlayer("Bot", Side.Dark),
                 Turn = Side.Dark
             };
@@ -28,6 +28,24 @@ namespace Reversi.Business.Services
             _boardService.PrepareBoardToPlay(session.Board);
 
             return session;
+        }
+
+        public Session MakeTurn(Session session, string boardPlace)
+        {
+            var currentPlayer = session.Turn == Side.Light ? session.Player : session.Opponent;
+            currentPlayer = _playerService.SpendDisk(currentPlayer);
+
+            _boardService.PlaceDisk(session.Board, boardPlace, currentPlayer.Side);
+            
+            session.Turn = SwitchTurn(session.Turn);
+            return session;
+        }
+
+        private Side SwitchTurn(Side currentSide)
+        {
+            currentSide = currentSide == Side.Light ? Side.Dark : Side.Light;
+
+            return currentSide;
         }
     }
 }

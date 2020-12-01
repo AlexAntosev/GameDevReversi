@@ -22,6 +22,14 @@ namespace Reversi.Business.Services
             return player;
         }
 
+        public Player SpendDisk(Player player)
+        {
+            var lastDiskIndex = player.Disks.Count - 1;
+            player.Disks.RemoveAt(lastDiskIndex);
+
+            return player;
+        }
+
         private List<Disk> PreparePlayerDisks(Side side)
         {
             var disks = new List<Disk>();
