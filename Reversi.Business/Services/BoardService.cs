@@ -13,17 +13,18 @@ namespace Reversi.Business.Services
             var board = new Dictionary<string, Disk>();
             
             var row = 'A';
-            var column = 1;
+            
             for (int i = 0; i < InitialSessionSettings.BoardRowDisksCount; i++)
             {
+                var column = 1;
                 for (int j = 0; j < InitialSessionSettings.BoardColumnDisksCount; j++)
                 {
                     var boardPlace = $"{row}{column}";
                     board.Add(boardPlace, null);
-
-                    row++;
                     column++;
                 }
+                
+                row++;
             }
 
             return board;
