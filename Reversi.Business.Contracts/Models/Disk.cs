@@ -4,6 +4,11 @@ namespace Reversi.Business.Contracts.Models
 {
     public class Disk
     {
-        public Side Side { get; set; }
+        public Side Side { get; }
+
+        public Disk(Side side)
+        {
+            Side = side;
+        }
     }
 }
