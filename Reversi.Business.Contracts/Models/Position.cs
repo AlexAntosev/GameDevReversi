@@ -4,9 +4,9 @@ namespace Reversi.Business.Contracts.Models
 {
     public class Position
     {
-        public char Row { get; set; }
-        
-        public char Column { get; set; }
+        private char Row { get; }
+
+        private char Column { get; }
 
         public Position(char row, char column)
         {
@@ -22,32 +22,27 @@ namespace Reversi.Business.Contracts.Models
             Column = position.Column;
         }
         
-        public string NextColumn()
+        public Position Change(int row, int column)
         {
-            var newColumn = Column;
-            return new Position(Row, ++newColumn).ToString();
+            var newColumn = Column + column;
+            var newRow = Row + row;
+            
+            return new Position((char)newRow, (char)newColumn);
         }
         
         public static bool operator ==(Position x, Position y)
         {
-            return x.Equals(y);
+            return x?.Equals(y) ?? ReferenceEquals(y, null);
         }
 
         public static bool operator !=(Position x, Position y)
         {
-            return !(x == y);
+            return !(x ==y);
         }
 
         public override bool Equals(object obj)
         {
-            if ((obj == null) || GetType() != obj.GetType())
-            {
-                return false;
-            }
-
-            var position = (Position) obj;
-
-            return Row == position.Row && Column == position.Column;
+            return obj is Position position  && Row == position.Row && Column == position.Column;
         }
         
         public override int GetHashCode()
