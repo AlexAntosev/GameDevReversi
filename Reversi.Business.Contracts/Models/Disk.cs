@@ -4,11 +4,11 @@ namespace Reversi.Business.Contracts.Models
 {
     public class Disk
     {
-        public Side Side { get; }
+        public Color Color { get; }
 
-        public Disk(Side side)
+        public Disk(Color color)
         {
-            Side = side;
+            Color = color;
         }
     }
 }

@@ -5,12 +5,10 @@ namespace Reversi.Business.Contracts.Models
 {
     public class Session
     {
-        public Player Player { get; set; }
-        
-        public Player Opponent { get; set; } 
+        public List<Player> Players { get; set; }
             
-        public Dictionary<string, Disk> Board { get; set; }
+        public Board Board { get; set; }
         
-        public Side Turn { get; set; }
+        public Color Turn { get; set; }
     }
 }

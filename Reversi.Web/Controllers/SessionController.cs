@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Reversi.Business.Contracts.Models;
 using Reversi.Business.Contracts.Services;
 
@@ -16,21 +18,29 @@ namespace Reversi.Web.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
-        public Session CreateSession(Player player)
+        [Route("make-turn")]
+        public void MakeTurn(Guid playerId, string cell)
         {
-            var session = _sessionService.CreateSession(player);
-            
-            return session;
+            var position = new Position(cell);
+            _sessionService.MakeTurn(playerId, position);
         }
 
-        [HttpPost]
-        [Route("make-turn")]
-        public Session MakeTurn(Session session, string boardPlace)
+        [HttpGet]
+        [Route("possible-moves")]
+        public List<string> GetPossibleMoves(Guid playerId)
         {
-            session = _sessionService.MakeTurn(session, boardPlace);
+            var possibleMoves = _sessionService.GetPossibleMoves(playerId);
 
-            return session;
+            return possibleMoves;
+        }
+        
+        [HttpGet]
+        [Route("players")]
+        public List<Player> GetPlayers()
+        {
+            var players = _sessionService.GetPlayers();
+
+            return players;
         }
     }
 }

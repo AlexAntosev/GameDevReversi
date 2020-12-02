@@ -1,6 +1,6 @@
 ﻿namespace Reversi.Business.Contracts.Enums
 {
-    public enum Side
+    public enum Color
     {
         Light,
         Dark

@@ -1,48 +1,45 @@
 ﻿using System.Collections.Generic;
-using Reversi.Business.Contracts.Constants;
+using System.Linq;
 using Reversi.Business.Contracts.Enums;
 using Reversi.Business.Contracts.Models;
 using Reversi.Business.Contracts.Services;
+using Reversi.Business.Extensions;
 
 namespace Reversi.Business.Services
 {
     public class BoardService : IBoardService
     {
-        public Dictionary<string, Disk> CreateBoard()
+        public List<string> GetPossibleMoves(Board board, Color color)
         {
-            var board = new Dictionary<string, Disk>();
+            var playerDisksPositions = board.Cells
+                .Where(c => !c.Value.IsEmpty && c.Value.Disk.Color == color.OpponentColor())
+                .Select(c => c.Key)
+                .ToList();
             
-            var row = 'A';
-            
-            for (int i = 0; i < InitialSessionSettings.BoardRowDisksCount; i++)
+            var possibleMoves = new List<string>();
+            foreach (var playerDisksPosition in playerDisksPositions)
             {
-                var column = 1;
-                for (int j = 0; j < InitialSessionSettings.BoardColumnDisksCount; j++)
-                {
-                    var boardPlace = $"{row}{column}";
-                    board.Add(boardPlace, null);
-                    column++;
-                }
-                
-                row++;
+                var adjacentEmptyPosition = FindAdjacentEmptyPosition(board, playerDisksPosition);
+                possibleMoves.AddRange(adjacentEmptyPosition);
             }
 
-            return board;
+            var uniqPossibleMoves = possibleMoves.Distinct().ToList();
+            
+            return uniqPossibleMoves;
         }
 
-        public void PrepareBoardToPlay(Dictionary<string, Disk> board)
+        private List<string> FindAdjacentEmptyPosition(Board board, Position position)
         {
-            board["D4"] = new Disk(Side.Dark);
-            board["E5"] = new Disk(Side.Dark);
-            board["D5"] = new Disk(Side.Light);
-            board["E4"] = new Disk(Side.Light);
-        }
+            var possiblePositions = board.Cells
+                .Where(c => c.Value.IsEmpty)
+                .Where(c => c.Key.ToString() == position.NextColumn() ||
+                                   c.Key.ToString() == position.PreviousColumn() ||
+                                   c.Key.ToString() == position.NextRow() ||
+                                   c.Key.ToString() == position.PreviousRow())
+                .Select(c => c.Key.ToString())
+                .ToList();
 
-        public Dictionary<string, Disk> PlaceDisk(Dictionary<string, Disk> board, string boardPlace, Side side)
-        {
-            board[boardPlace] = new Disk(side);
-
-            return board;
+            return possiblePositions;
         }
     }
 }

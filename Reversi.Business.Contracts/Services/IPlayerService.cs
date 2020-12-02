@@ -5,8 +5,6 @@ namespace Reversi.Business.Contracts.Services
 {
     public interface IPlayerService
     {
-        Player CreatePlayer(string name, Side side);
-
-        Player SpendDisk(Player player);
+        Player CreatePlayer(Color color);
     }
 }

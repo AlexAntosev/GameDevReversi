@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Reversi.Business.Contracts.Constants;
 using Reversi.Business.Contracts.Enums;
 using Reversi.Business.Contracts.Models;
 using Reversi.Business.Contracts.Services;
@@ -9,36 +7,15 @@ namespace Reversi.Business.Services
 {
     public class PlayerService : IPlayerService
     {
-        public Player CreatePlayer(string name, Side side)
+        public Player CreatePlayer(Color color)
         {
             var player = new Player()
             {
                 Id = Guid.NewGuid(),
-                Name = name,
-                Disks = PreparePlayerDisks(side),
-                Side = side
+                Color = color
             };
             
             return player;
-        }
-
-        public Player SpendDisk(Player player)
-        {
-            var lastDiskIndex = player.Disks.Count - 1;
-            player.Disks.RemoveAt(lastDiskIndex);
-
-            return player;
-        }
-
-        private List<Disk> PreparePlayerDisks(Side side)
-        {
-            var disks = new List<Disk>();
-            for (int i = 0; i < InitialSessionSettings.PlayerDisksCount; i++)
-            {
-                disks.Add(new Disk(side));
-            }
-
-            return disks;
         }
     }
 }

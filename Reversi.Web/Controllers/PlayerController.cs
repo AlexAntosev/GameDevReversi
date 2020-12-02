@@ -18,9 +18,9 @@ namespace Reversi.Web.Controllers
 
         [HttpPost]
         [Route("create")]
-        public Player CreateSession(string name)
+        public Player CreatePlayer(Color color)
         {
-            var player = _playerService.CreatePlayer(name, Side.Light);
+            var player = _playerService.CreatePlayer(color);
             
             return player;
         }

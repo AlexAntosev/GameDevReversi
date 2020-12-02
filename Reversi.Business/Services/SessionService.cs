@@ -1,4 +1,7 @@
-﻿using Reversi.Business.Contracts.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Reversi.Business.Contracts.Enums;
 using Reversi.Business.Contracts.Models;
 using Reversi.Business.Contracts.Services;
 
@@ -6,6 +9,8 @@ namespace Reversi.Business.Services
 {
     public class SessionService : ISessionService
     {
+        private readonly Session _session;
+
         private readonly IPlayerService _playerService;
         private readonly IBoardService _boardService;
 
@@ -13,39 +18,62 @@ namespace Reversi.Business.Services
         {
             _playerService = playerService;
             _boardService = boardService;
+            _session = CreateSession();
         }
-        
-        public Session CreateSession(Player player)
+
+        public Session CreateSession()
         {
             var session = new Session()
             {
-                Board = _boardService.CreateBoard(),
-                Player = player,
-                Opponent = _playerService.CreatePlayer("Bot", Side.Dark),
-                Turn = Side.Dark
+                Board = new Board(),
+                Players = new List<Player>()
+                {
+                    _playerService.CreatePlayer(Color.Light),
+                    _playerService.CreatePlayer(Color.Dark)
+                },
+                Turn = Color.Dark
             };
-            
-            _boardService.PrepareBoardToPlay(session.Board);
 
             return session;
         }
 
-        public Session MakeTurn(Session session, string boardPlace)
+        public void MakeTurn(Guid playerId, Position position)
         {
-            var currentPlayer = session.Turn == Side.Light ? session.Player : session.Opponent;
-            currentPlayer = _playerService.SpendDisk(currentPlayer);
+            var currentPlayer = _session.Players.FirstOrDefault(p => p.Id == playerId);
+            if (currentPlayer == null)
+            {
+                throw new Exception($"Player {playerId} not found");
+            }
 
-            _boardService.PlaceDisk(session.Board, boardPlace, currentPlayer.Side);
-            
-            session.Turn = SwitchTurn(session.Turn);
-            return session;
+            _session.Board.PlaceDisk(position, currentPlayer.Color);
+            _session.Turn = SwitchTurn(_session.Turn);
         }
 
-        private Side SwitchTurn(Side currentSide)
+        public List<string> GetPossibleMoves(Guid playerId)
         {
-            currentSide = currentSide == Side.Light ? Side.Dark : Side.Light;
+            var currentPlayer = _session.Players.FirstOrDefault(p => p.Id == playerId);
+            if (currentPlayer == null)
+            {
+                throw new Exception($"Player {playerId} not found");
+            }
 
-            return currentSide;
+            var possibleMoves = _boardService.GetPossibleMoves(_session.Board, currentPlayer.Color);
+
+            return possibleMoves;
+        }
+
+        public List<Player> GetPlayers()
+        {
+            var players = _session.Players;
+
+            return players;
+        }
+
+        private Color SwitchTurn(Color currentColor)
+        {
+            currentColor = currentColor == Color.Light ? Color.Dark : Color.Light;
+
+            return currentColor;
         }
     }
 }

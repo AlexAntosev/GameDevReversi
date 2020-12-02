@@ -46,7 +46,7 @@ namespace Reversi.Web
 
         public void RegisterServices(IServiceCollection services)
         {
-            services.AddTransient<ISessionService, SessionService>();
+            services.AddSingleton<ISessionService, SessionService>();
             services.AddTransient<IPlayerService, PlayerService>();
             services.AddTransient<IBoardService, BoardService>();
         }
