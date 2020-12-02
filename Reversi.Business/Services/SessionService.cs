@@ -45,7 +45,7 @@ namespace Reversi.Business.Services
                 throw new Exception($"Player {playerId} not found");
             }
 
-            _session.Board.PlaceDisk(position, currentPlayer.Color);
+            _boardService.PlaceDisk(_session.Board, position, currentPlayer.Color);
             _session.Turn = SwitchTurn(_session.Turn);
         }
 

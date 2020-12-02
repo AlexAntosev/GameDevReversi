@@ -4,7 +4,7 @@ namespace Reversi.Business.Contracts.Models
 {
     public class Disk
     {
-        public Color Color { get; }
+        public Color Color { get; set; }
 
         public Disk(Color color)
         {

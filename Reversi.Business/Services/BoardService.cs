@@ -19,7 +19,7 @@ namespace Reversi.Business.Services
             var possibleMoves = new List<string>();
             foreach (var playerDisksPosition in playerDisksPositions)
             {
-                var adjacentEmptyPosition = FindAdjacentEmptyPosition(board, playerDisksPosition, color);
+                var adjacentEmptyPosition = FindPossiblePosition(board, playerDisksPosition, color);
                 possibleMoves.AddRange(adjacentEmptyPosition);
             }
 
@@ -28,14 +28,25 @@ namespace Reversi.Business.Services
             return uniqPossibleMoves;
         }
 
-        private List<string> FindAdjacentEmptyPosition(Board board, Position position, Color color)
+        public void PlaceDisk(Board board, Position position, Color color)
+        {
+            board.PlaceDisk(position, color);
+            var possibleVectors = GetPossibleVectors();
+            
+            foreach (var possibleVector in possibleVectors)
+            {
+                CheckPositionForSwitch(possibleVector, position, board, color);
+            }
+        }
+
+        private List<string> FindPossiblePosition(Board board, Position position, Color color)
         {
             var possibleVectors = GetPossibleVectors();
             var possiblePositions = new List<string>();
             
             foreach (var possibleVector in possibleVectors)
             {
-                var possiblePosition = CheckPosition(possibleVector, position, board, color);
+                var possiblePosition = CheckPositionForMove(possibleVector, position, board, color);
                 if (possiblePosition != null)
                 {
                     possiblePositions.Add(possiblePosition.ToString());
@@ -45,7 +56,7 @@ namespace Reversi.Business.Services
             return possiblePositions;
         }
 
-        private Position CheckPosition(
+        private Position CheckPositionForMove(
             (int row, int column) vector,
             Position position,
             Board board,
@@ -64,7 +75,7 @@ namespace Reversi.Business.Services
 
             if (!adjacentCell.IsEmpty && adjacentCell.Disk.Color == color.OpponentColor())
             {
-                return CheckPosition(vector, adjacentPosition, board, color);
+                return CheckPositionForMove(vector, adjacentPosition, board, color);
             }
 
             if (adjacentCell.IsEmpty && currentCell != null && currentCell.Disk.Color != color)
@@ -73,6 +84,37 @@ namespace Reversi.Business.Services
             }
 
             return null;
+        }
+        
+        private bool CheckPositionForSwitch(
+            (int row, int column) vector,
+            Position position,
+            Board board,
+            Color color)
+        {
+            var adjacentPosition = position.Change(vector.row, vector.column);
+            var adjacentCell = board.Cells
+                .FirstOrDefault(c => c.Key.ToString() == adjacentPosition.ToString()).Value;
+
+            if (adjacentCell == null)
+            {
+                return false;
+            }
+            
+            if (!adjacentCell.IsEmpty && adjacentCell.Disk.Color == color.OpponentColor())
+            {
+                if (CheckPositionForSwitch(vector, adjacentPosition, board, color))
+                {
+                    adjacentCell.Disk.Color = adjacentCell.Disk.Color.OpponentColor();
+                }
+            }
+
+            if (!adjacentCell.IsEmpty && adjacentCell.Disk.Color == color)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private List<(int row, int column)> GetPossibleVectors()
