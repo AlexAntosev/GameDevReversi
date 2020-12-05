@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Reversi.Business.Contracts.Models;
 using Reversi.Business.Contracts.Services;
+using Reversi.Web.Models;
 
 namespace Reversi.Web.Controllers
 {
@@ -19,10 +20,10 @@ namespace Reversi.Web.Controllers
 
         [HttpPost]
         [Route("make-turn")]
-        public void MakeTurn(Guid playerId, string cell)
+        public void MakeTurn([FromBody]MakeTurnModel makeTurnModel)
         {
-            var position = new Position(cell);
-            _sessionService.MakeTurn(playerId, position);
+            var position = new Position(makeTurnModel.Cell);
+            _sessionService.MakeTurn(makeTurnModel.PlayerId, position);
         }
 
         [HttpGet]
