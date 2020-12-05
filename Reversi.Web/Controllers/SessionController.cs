@@ -42,5 +42,14 @@ namespace Reversi.Web.Controllers
 
             return players;
         }
+        
+        [HttpGet]
+        [Route("board")]
+        public Board GetBoard()
+        {
+            var board = _sessionService.GetBoard();
+
+            return board;
+        }
     }
 }

@@ -14,6 +14,20 @@ namespace Reversi.Web
         {
             RegisterServices(services);
             
+            // Add CORS policy
+            services.AddCors(
+                options =>
+                {
+                    options.AddPolicy(
+                        "cors",
+                        builder =>
+                        {
+                            // Not a permanent solution, but just trying to isolate the problem
+                            builder.WithOrigins("http://localhost:4200").AllowAnyOrigin().AllowAnyMethod()
+                                .AllowAnyHeader();
+                        });
+                });
+            
             services.AddControllers(c => c.EnableEndpointRouting = false).AddNewtonsoftJson();
             services.AddSwaggerGen(
                 s => { s.SwaggerDoc("v1", new OpenApiInfo { Title = "Reversi API", Version = "v1" }); });
@@ -25,6 +39,9 @@ namespace Reversi.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            // Use the CORS policy
+            app.UseCors("cors");
 
             app.UseSwagger();
             app.UseSwaggerUI(x =>

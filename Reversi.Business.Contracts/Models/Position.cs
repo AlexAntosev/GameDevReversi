@@ -4,9 +4,9 @@ namespace Reversi.Business.Contracts.Models
 {
     public class Position
     {
-        private char Row { get; }
+        public char Row { get; }
 
-        private char Column { get; }
+        public char Column { get; }
 
         public Position(char row, char column)
         {

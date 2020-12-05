@@ -69,6 +69,13 @@ namespace Reversi.Business.Services
             return players;
         }
 
+        public Board GetBoard()
+        {
+            var board = _session.Board;
+
+            return board;
+        }
+
         private Color SwitchTurn(Color currentColor)
         {
             currentColor = currentColor == Color.Light ? Color.Dark : Color.Light;

@@ -12,8 +12,8 @@ namespace Reversi.Business.Services
         public List<string> GetPossibleMoves(Board board, Color color)
         {
             var playerDisksPositions = board.Cells
-                .Where(c => !c.Value.IsEmpty && c.Value.Disk.Color == color)
-                .Select(c => c.Key)
+                .Where(c => !c.IsEmpty && c.Disk.Color == color)
+                .Select(c => c.Position)
                 .ToList();
             
             var possibleMoves = new List<string>();
@@ -64,9 +64,9 @@ namespace Reversi.Business.Services
         {
             var adjacentPosition = position.Change(vector.row, vector.column);
             var adjacentCell = board.Cells
-                .FirstOrDefault(c => c.Key.ToString() == adjacentPosition.ToString()).Value;
+                .FirstOrDefault(c => c.Position.ToString() == adjacentPosition.ToString());
             var currentCell = board.Cells
-                .FirstOrDefault(c => c.Key.ToString() == position.ToString()).Value;
+                .FirstOrDefault(c => c.Position.ToString() == position.ToString());
 
             if (adjacentCell == null || (!adjacentCell.IsEmpty && adjacentCell.Disk.Color == color))
             {
@@ -94,7 +94,7 @@ namespace Reversi.Business.Services
         {
             var adjacentPosition = position.Change(vector.row, vector.column);
             var adjacentCell = board.Cells
-                .FirstOrDefault(c => c.Key.ToString() == adjacentPosition.ToString()).Value;
+                .FirstOrDefault(c => c.Position.ToString() == adjacentPosition.ToString());
 
             if (adjacentCell == null)
             {

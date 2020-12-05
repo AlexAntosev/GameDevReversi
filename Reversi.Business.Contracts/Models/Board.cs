@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Reversi.Business.Contracts.Constants;
 using Reversi.Business.Contracts.Enums;
@@ -7,7 +8,7 @@ namespace Reversi.Business.Contracts.Models
 {
     public class Board
     {
-        public Dictionary<Position, Cell> Cells { get; set; }
+        public List<Cell> Cells { get; set; }
 
         public Board()
         {
@@ -22,12 +23,18 @@ namespace Reversi.Business.Contracts.Models
         
         private Cell GetCell(Position position)
         {
-            return Cells[position];
+            var cell = Cells.Find(c => c.Position == position);
+            if (cell == null)
+            {
+                throw new NullReferenceException("Cell not found");
+            }
+
+            return cell;
         }
         
         private void CreateCells()
         {
-            Cells = new Dictionary<Position, Cell>();
+            Cells = new List<Cell>();
             var row = 'A';
             
             for (var i = 0; i < InitialSessionSettings.BoardRowDisksCount; i++)
@@ -36,7 +43,7 @@ namespace Reversi.Business.Contracts.Models
                 for (var j = 0; j < InitialSessionSettings.BoardColumnDisksCount; j++)
                 {
                     var position = new Position(row, column);
-                    Cells.Add(position, new Cell());
+                    Cells.Add(new Cell(position));
                     column++;
                 }
                 
