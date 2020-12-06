@@ -26,29 +26,29 @@ namespace Reversi.Business.Contracts.Parsers
                 return false;
             }
 
-            var row = cell[0];
-            if (!PossibleRows.Contains(row))
-            {
-                return false;
-            }
-            
-            var column = cell[1];
+            var column = cell[0];
             if (!PossibleColumns.Contains(column))
             {
                 return false;
             }
             
-            position = new Position(row, column);
+            var row = cell[1];
+            if (!PossibleRows.Contains(row))
+            {
+                return false;
+            }
+            
+            position = new Position(column, row);
 
             return true;
         }
         
-        private static List<char> PossibleRows = new List<char>()
+        private static List<char> PossibleColumns = new List<char>()
         {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'
         };
         
-        private static List<char> PossibleColumns = new List<char>()
+        private static List<char> PossibleRows = new List<char>()
         {
             '1', '2', '3', '4', '5', '6', '7', '8'
         };

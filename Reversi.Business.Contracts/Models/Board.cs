@@ -35,14 +35,14 @@ namespace Reversi.Business.Contracts.Models
         private void CreateCells()
         {
             Cells = new List<Cell>();
-            var row = 'A';
+            var row = '1';
             
             for (var i = 0; i < InitialSessionSettings.BoardRowDisksCount; i++)
             {
-                var column = '1';
+                var column = 'A';
                 for (var j = 0; j < InitialSessionSettings.BoardColumnDisksCount; j++)
                 {
-                    var position = new Position(row, column);
+                    var position = new Position(column, row);
                     Cells.Add(new Cell(position));
                     column++;
                 }

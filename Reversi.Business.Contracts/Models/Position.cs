@@ -8,7 +8,7 @@ namespace Reversi.Business.Contracts.Models
 
         public char Column { get; }
 
-        public Position(char row, char column)
+        public Position(char column, char row)
         {
             Row = row;
             Column = column;
@@ -27,7 +27,7 @@ namespace Reversi.Business.Contracts.Models
             var newColumn = Column + column;
             var newRow = Row + row;
             
-            return new Position((char)newRow, (char)newColumn);
+            return new Position((char)newColumn, (char)newRow);
         }
         
         public static bool operator ==(Position x, Position y)
@@ -52,7 +52,7 @@ namespace Reversi.Business.Contracts.Models
 
         public override string ToString()
         {
-            return $"{Row}{Column}";
+            return $"{Column}{Row}";
         }
     }
 }
