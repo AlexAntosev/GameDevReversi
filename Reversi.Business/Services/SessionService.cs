@@ -49,7 +49,7 @@ namespace Reversi.Business.Services
             _session.Turn = SwitchTurn(_session.Turn);
         }
 
-        public List<string> GetPossibleMoves(Guid playerId)
+        public List<Position> GetPossibleMoves(Guid playerId)
         {
             var currentPlayer = _session.Players.FirstOrDefault(p => p.Id == playerId);
             if (currentPlayer == null)

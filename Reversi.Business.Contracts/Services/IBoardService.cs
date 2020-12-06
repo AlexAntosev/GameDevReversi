@@ -6,7 +6,7 @@ namespace Reversi.Business.Contracts.Services
 {
     public interface IBoardService
     {
-        List<string> GetPossibleMoves(Board board, Color color);
+        List<Position> GetPossibleMoves(Board board, Color color);
 
         void PlaceDisk(Board board, Position position, Color color);
     }

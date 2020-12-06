@@ -9,17 +9,17 @@ namespace Reversi.Business.Services
 {
     public class BoardService : IBoardService
     {
-        public List<string> GetPossibleMoves(Board board, Color color)
+        public List<Position> GetPossibleMoves(Board board, Color color)
         {
             var playerDisksPositions = board.Cells
                 .Where(c => !c.IsEmpty && c.Disk.Color == color)
                 .Select(c => c.Position)
                 .ToList();
             
-            var possibleMoves = new List<string>();
+            var possibleMoves = new List<Position>();
             foreach (var playerDisksPosition in playerDisksPositions)
             {
-                var adjacentEmptyPosition = FindPossiblePosition(board, playerDisksPosition, color);
+                var adjacentEmptyPosition = FindPossiblePositions(board, playerDisksPosition, color);
                 possibleMoves.AddRange(adjacentEmptyPosition);
             }
 
@@ -39,17 +39,17 @@ namespace Reversi.Business.Services
             }
         }
 
-        private List<string> FindPossiblePosition(Board board, Position position, Color color)
+        private List<Position> FindPossiblePositions(Board board, Position position, Color color)
         {
             var possibleVectors = GetPossibleVectors();
-            var possiblePositions = new List<string>();
+            var possiblePositions = new List<Position>();
             
             foreach (var possibleVector in possibleVectors)
             {
                 var possiblePosition = CheckPositionForMove(possibleVector, position, board, color);
                 if (possiblePosition != null)
                 {
-                    possiblePositions.Add(possiblePosition.ToString());
+                    possiblePositions.Add(possiblePosition);
                 }
             }
 

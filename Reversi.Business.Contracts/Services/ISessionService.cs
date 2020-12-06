@@ -10,7 +10,7 @@ namespace Reversi.Business.Contracts.Services
 
         public void MakeTurn(Guid playerId, Position position);
         
-        List<string> GetPossibleMoves(Guid playerId);
+        List<Position> GetPossibleMoves(Guid playerId);
         
         List<Player> GetPlayers();
         

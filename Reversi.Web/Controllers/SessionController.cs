@@ -28,7 +28,7 @@ namespace Reversi.Web.Controllers
 
         [HttpGet]
         [Route("possible-moves/{playerId}")]
-        public List<string> GetPossibleMoves(Guid playerId)
+        public List<Position> GetPossibleMoves(Guid playerId)
         {
             var possibleMoves = _sessionService.GetPossibleMoves(playerId);
 
