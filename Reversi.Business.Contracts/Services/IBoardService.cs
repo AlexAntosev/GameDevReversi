@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-using Reversi.Business.Contracts.Enums;
+﻿using System;
+using System.Collections.Generic;
 using Reversi.Business.Contracts.Models;
 
 namespace Reversi.Business.Contracts.Services
 {
     public interface IBoardService
     {
-        List<Position> GetPossibleMoves(Board board, Color color);
+        public void MakeTurn(Guid playerId, Position position);
+        
+        List<Position> GetPossibleMoves(Guid playerId);
 
-        void PlaceDisk(Board board, Position position, Color color);
+        Board GetBoard();
     }
 }

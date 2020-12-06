@@ -7,15 +7,15 @@ using Reversi.Web.Models;
 
 namespace Reversi.Web.Controllers
 {
-    [Route("api/session")]
+    [Route("api/board")]
     [ApiController]
-    public class SessionController : ControllerBase
+    public class BoardController : ControllerBase
     {
-        private readonly ISessionService _sessionService;
+        private readonly IBoardService _boardService;
 
-        public SessionController(ISessionService sessionService)
+        public BoardController(IBoardService boardService)
         {
-            _sessionService = sessionService;
+            _boardService = boardService;
         }
 
         [HttpPost]
@@ -23,32 +23,22 @@ namespace Reversi.Web.Controllers
         public void MakeTurn([FromBody]MakeTurnModel makeTurnModel)
         {
             var position = new Position(makeTurnModel.Cell);
-            _sessionService.MakeTurn(makeTurnModel.PlayerId, position);
+            _boardService.MakeTurn(makeTurnModel.PlayerId, position);
         }
 
         [HttpGet]
         [Route("possible-moves/{playerId}")]
         public List<Position> GetPossibleMoves(Guid playerId)
         {
-            var possibleMoves = _sessionService.GetPossibleMoves(playerId);
+            var possibleMoves = _boardService.GetPossibleMoves(playerId);
 
             return possibleMoves;
         }
         
         [HttpGet]
-        [Route("players")]
-        public List<Player> GetPlayers()
-        {
-            var players = _sessionService.GetPlayers();
-
-            return players;
-        }
-        
-        [HttpGet]
-        [Route("board")]
         public Board GetBoard()
         {
-            var board = _sessionService.GetBoard();
+            var board = _boardService.GetBoard();
 
             return board;
         }

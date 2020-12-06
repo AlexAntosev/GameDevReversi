@@ -8,7 +8,5 @@ namespace Reversi.Business.Contracts.Models
         public List<Player> Players { get; set; }
             
         public Board Board { get; set; }
-        
-        public Color Turn { get; set; }
     }
 }

@@ -5,8 +5,14 @@ namespace Reversi.Business.Contracts.Models
 {
     public class Player
     {
-        public Guid Id { get; set; }
+        public Player(Color color)
+        {
+            Id = Guid.NewGuid();
+            Color = color;
+        }
         
-        public Color Color { get; set; }
+        public Guid Id { get; }
+        
+        public Color Color { get; }
     }
 }

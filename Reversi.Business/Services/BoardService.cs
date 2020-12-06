@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Reversi.Business.Contracts.Enums;
 using Reversi.Business.Contracts.Models;
@@ -9,7 +10,49 @@ namespace Reversi.Business.Services
 {
     public class BoardService : IBoardService
     {
-        public List<Position> GetPossibleMoves(Board board, Color color)
+        private readonly ISessionService _sessionService;
+
+        public BoardService(ISessionService sessionService)
+        {
+            _sessionService = sessionService;
+        }
+        
+        public void MakeTurn(Guid playerId, Position position)
+        {
+            var currentPlayer = GetCurrentPlayer(playerId);
+            var board = GetBoard();
+            
+            PlaceDisk(board, position, currentPlayer.Color);
+        }
+
+        public List<Position> GetPossibleMoves(Guid playerId)
+        {
+            var currentPlayer = GetCurrentPlayer(playerId);
+            var board = GetBoard();
+            var possibleMoves = GetPossibleMoves(board, currentPlayer.Color);
+
+            return possibleMoves;
+        }
+        
+        public Board GetBoard()
+        {
+            var board = _sessionService.GetBoard();
+
+            return board;
+        }
+
+        private Player GetCurrentPlayer(Guid playerId)
+        {
+            var currentPlayer = _sessionService.GetPlayers().FirstOrDefault(p => p.Id == playerId);
+            if (currentPlayer == null)
+            {
+                throw new Exception($"Player {playerId} not found");
+            }
+
+            return currentPlayer;
+        }
+
+        private List<Position> GetPossibleMoves(Board board, Color color)
         {
             var playerDisksPositions = board.Cells
                 .Where(c => !c.IsEmpty && c.Disk.Color == color)
@@ -28,7 +71,7 @@ namespace Reversi.Business.Services
             return uniqPossibleMoves;
         }
 
-        public void PlaceDisk(Board board, Position position, Color color)
+        private void PlaceDisk(Board board, Position position, Color color)
         {
             board.PlaceDisk(position, color);
             var possibleVectors = GetPossibleVectors();

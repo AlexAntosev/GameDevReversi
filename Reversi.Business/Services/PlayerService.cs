@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Reversi.Business.Contracts.Enums;
 using Reversi.Business.Contracts.Models;
 using Reversi.Business.Contracts.Services;
@@ -7,15 +8,18 @@ namespace Reversi.Business.Services
 {
     public class PlayerService : IPlayerService
     {
-        public Player CreatePlayer(Color color)
+        private readonly ISessionService _sessionService;
+
+        public PlayerService(ISessionService sessionService)
         {
-            var player = new Player()
-            {
-                Id = Guid.NewGuid(),
-                Color = color
-            };
-            
-            return player;
+            _sessionService = sessionService;
+        }
+        
+        public List<Player> GetPlayers()
+        {
+            var players = _sessionService.GetPlayers();
+
+            return players;
         }
     }
 }
