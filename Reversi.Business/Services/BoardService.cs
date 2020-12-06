@@ -42,12 +42,49 @@ namespace Reversi.Business.Services
             return board;
         }
 
+        public Player CheckWinner()
+        {
+            var board = _sessionService.GetBoard();
+
+            Player winner = null;
+            var lightPlayer = GetCurrentPlayer(Color.Light);
+            var darkPlayer = GetCurrentPlayer(Color.Dark);
+            var isLightPlayerCannotMove = GetPossibleMovesForPlayer(lightPlayer.Id).Count == 0;
+            var isDarkPlayerCannotMove = GetPossibleMovesForPlayer(darkPlayer.Id).Count == 0;
+            if (isLightPlayerCannotMove && isDarkPlayerCannotMove)
+            {
+                var lightDisks = board.Cells.Count(c => c.Disk.Color == Color.Light);
+                var darkDisks = board.Cells.Count(c => c.Disk.Color == Color.Dark);
+                if (lightDisks > darkDisks)
+                {
+                    winner = lightPlayer;
+                }
+                if (lightDisks < darkDisks)
+                {
+                    winner = darkPlayer;
+                }
+            }
+
+            return winner;
+        }
+
         private Player GetCurrentPlayer(Guid playerId)
         {
             var currentPlayer = _sessionService.GetPlayers().FirstOrDefault(p => p.Id == playerId);
             if (currentPlayer == null)
             {
                 throw new Exception($"Player {playerId} not found");
+            }
+
+            return currentPlayer;
+        }
+        
+        private Player GetCurrentPlayer(Color color)
+        {
+            var currentPlayer = _sessionService.GetPlayers().FirstOrDefault(p => p.Color == color);
+            if (currentPlayer == null)
+            {
+                throw new Exception($"Player {color} not found");
             }
 
             return currentPlayer;

@@ -11,5 +11,7 @@ namespace Reversi.Business.Contracts.Services
         List<Position> GetPossibleMovesForPlayer(Guid playerId);
 
         Board GetBoard();
+
+        Player CheckWinner();
     }
 }

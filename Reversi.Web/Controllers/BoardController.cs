@@ -36,6 +36,19 @@ namespace Reversi.Web.Controllers
         }
         
         [HttpGet]
+        [Route("check-winner")]
+        public WinnerModel CheckWinner()
+        {
+            var winner = _boardService.CheckWinner();
+            var winnerModel = new WinnerModel()
+            {
+                Winner = winner
+            };
+
+            return winnerModel;
+        }
+        
+        [HttpGet]
         public Board GetBoard()
         {
             var board = _boardService.GetBoard();
