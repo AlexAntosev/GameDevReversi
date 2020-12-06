@@ -30,7 +30,7 @@ namespace Reversi.Web.Controllers
         [Route("possible-moves/{playerId}")]
         public List<Position> GetPossibleMoves(Guid playerId)
         {
-            var possibleMoves = _boardService.GetPossibleMoves(playerId);
+            var possibleMoves = _boardService.GetPossibleMovesForPlayer(playerId);
 
             return possibleMoves;
         }

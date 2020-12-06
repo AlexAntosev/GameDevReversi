@@ -22,7 +22,7 @@ namespace Reversi.Business.Contracts.Models
             Column = position.Column;
         }
         
-        public Position Change(int row, int column)
+        public Position Move(int row, int column)
         {
             var newColumn = Column + column;
             var newRow = Row + row;

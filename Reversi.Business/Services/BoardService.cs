@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reversi.Business.Contracts.Constants;
 using Reversi.Business.Contracts.Enums;
 using Reversi.Business.Contracts.Models;
 using Reversi.Business.Contracts.Services;
@@ -25,7 +26,7 @@ namespace Reversi.Business.Services
             PlaceDisk(board, position, currentPlayer.Color);
         }
 
-        public List<Position> GetPossibleMoves(Guid playerId)
+        public List<Position> GetPossibleMovesForPlayer(Guid playerId)
         {
             var currentPlayer = GetCurrentPlayer(playerId);
             var board = GetBoard();
@@ -73,23 +74,41 @@ namespace Reversi.Business.Services
 
         private void PlaceDisk(Board board, Position position, Color color)
         {
-            board.PlaceDisk(position, color);
-            var possibleVectors = GetPossibleVectors();
-            
-            foreach (var possibleVector in possibleVectors)
+            TryPlaceDisk(board, position, color);
+            SwitchOpponentDisks(board, position, color);
+        }
+
+        private void SwitchOpponentDisks(Board board, Position position, Color color)
+        {
+            var basisVectors = Vectors.GetBasis();
+
+            foreach (var vector in basisVectors)
             {
-                CheckPositionForSwitch(possibleVector, position, board, color);
+                TrySwitchDisk(vector, position, board, color);
+            }
+        }
+
+        private void TryPlaceDisk(Board board, Position position, Color color)
+        {
+            var possiblePositions = GetPossibleMoves(board, color);
+            if (possiblePositions.Contains(position))
+            {
+                board.PlaceDisk(position, color);
+            }
+            else
+            {
+                throw new Exception("Not possible to place disk");
             }
         }
 
         private List<Position> FindPossiblePositions(Board board, Position position, Color color)
         {
-            var possibleVectors = GetPossibleVectors();
+            var basisVectors = Vectors.GetBasis();
             var possiblePositions = new List<Position>();
             
-            foreach (var possibleVector in possibleVectors)
+            foreach (var vector in basisVectors)
             {
-                var possiblePosition = CheckPositionForMove(possibleVector, position, board, color);
+                var possiblePosition = CheckPositionForMove(vector, position, board, color);
                 if (possiblePosition != null)
                 {
                     possiblePositions.Add(possiblePosition);
@@ -105,7 +124,7 @@ namespace Reversi.Business.Services
             Board board,
             Color color)
         {
-            var adjacentPosition = position.Change(vector.row, vector.column);
+            var adjacentPosition = position.Move(vector.row, vector.column);
             var adjacentCell = board.Cells
                 .FirstOrDefault(c => c.Position.ToString() == adjacentPosition.ToString());
             var currentCell = board.Cells
@@ -129,13 +148,13 @@ namespace Reversi.Business.Services
             return null;
         }
         
-        private bool CheckPositionForSwitch(
-            (int row, int column) vector,
+        private bool TrySwitchDisk(
+            (int y, int x) vector,
             Position position,
             Board board,
-            Color color)
+            Color currentPlayerColor)
         {
-            var adjacentPosition = position.Change(vector.row, vector.column);
+            var adjacentPosition = position.Move(vector.y, vector.x);
             var adjacentCell = board.Cells
                 .FirstOrDefault(c => c.Position.ToString() == adjacentPosition.ToString());
 
@@ -144,15 +163,15 @@ namespace Reversi.Business.Services
                 return false;
             }
             
-            if (!adjacentCell.IsEmpty && adjacentCell.Disk.Color == color.OpponentColor())
+            if (IsOpponentDisk(currentPlayerColor, adjacentCell))
             {
-                if (CheckPositionForSwitch(vector, adjacentPosition, board, color))
+                if (TrySwitchDisk(vector, adjacentPosition, board, currentPlayerColor))
                 {
                     adjacentCell.Disk.Color = adjacentCell.Disk.Color.OpponentColor();
                 }
             }
 
-            if (!adjacentCell.IsEmpty && adjacentCell.Disk.Color == color)
+            if (IsPlayerDisk(currentPlayerColor, adjacentCell))
             {
                 return true;
             }
@@ -160,21 +179,14 @@ namespace Reversi.Business.Services
             return false;
         }
 
-        private List<(int row, int column)> GetPossibleVectors()
+        private static bool IsPlayerDisk(Color currentPlayerColor, Cell adjacentCell)
         {
-            var vectors = new List<(int, int)>()
-            {
-                (-1, 0),
-                (-1, 1),
-                (0, 1),
-                (1, 1),
-                (1, 0),
-                (1, -1),
-                (0, -1),
-                (-1, -1)
-            };
+            return !adjacentCell.IsEmpty && adjacentCell.Disk.Color == currentPlayerColor;
+        }
 
-            return vectors;
+        private static bool IsOpponentDisk(Color color, Cell adjacentCell)
+        {
+            return !adjacentCell.IsEmpty && adjacentCell.Disk.Color == color.OpponentColor();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Reversi.Business.Contracts.Services
     {
         public void MakeTurn(Guid playerId, Position position);
         
-        List<Position> GetPossibleMoves(Guid playerId);
+        List<Position> GetPossibleMovesForPlayer(Guid playerId);
 
         Board GetBoard();
     }
